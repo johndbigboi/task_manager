@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Edit Task</h3>
+<div class="row">
+    <!-- action = update task to mongoDB and redirect to task.html  -->
+    <form action="{{ url_for('update_task', task_id=task._id) }}" method="POST" class="col s12">
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">poll</i>
+                <select id="category" name="category_name">
+                    <option value="" disabled selected>Choose Categories</option>
+                    {% for cat in categories %}
+                    <!-- It's a very simple use of boolean checks.
+                    If we find a match, then we add a selected attribute.
+                    Otherwise, we don't have a selected attribute. -->
+                    {% if cat.categories_name == task.category_name %}
+                    <option value="{{cat.category_name}}" selected>{{cat.category_name}}</option>
+                    {% else %}
+                    <!-- Because we're only using a single select, there should only ever be one match. -->
+                    <option value="{{cat.category_name}}">{{cat.category_name}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <label>Task</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">assignment</i>
+                <input id="task_name" name="task_name" type="text" class="validate" value="{{task.task_name}}">
+                <label for="icon_prefix">Task Name</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">subject</i>
+                <textarea name="task_description" id="task_description"
+                    class="materialize-textarea">{{task.task_description}}</textarea>
+                <label for="textarea1">Task Description</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">today</i>
+                <input id="matfix" name="due_date" type="text" class="datepicker">
+                <label for="icon_prefix">Due Date</label>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Switch -->
+            <div class="switch">
+                <label>
+                    {% if task.is_urgent %}
+                    <!-- So if it's true that the task is urgent, then use the checked attribute.
+                                                And if it's not, then we don't. -->
+                    <input id="is_urgent" name="is_urgent" type="checkbox" checked>
+                    <!-- You see there that if it's urgent, use the checked attribute.
+                            If it's not urgent, then omit the checked attribute. -->
+                    {% else %}
+                    <input id="is_urgent" name="is_urgent" type="checkbox">
+                    {% endif %}
+                    <span class="lever"></span>
+                    Is Urgent
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <button class="btn waves-effect waves-light" type="submit" name="action">Edit Task
+                <i class="material-icons right">playlist_add</i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        due_date = Date.parse('{{task.due_date}}');
+        $('#matfix').pickadate('picker').set('select', due_date, { format: 'dd/mm/yyyy' }).trigger('change');
+    });
+</script>
+
+{% endblock %}
