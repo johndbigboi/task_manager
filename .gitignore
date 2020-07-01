@@ -12,6 +12,7 @@ env.py
 venv
 .vscode
 __pycache__
+env.pyc
 # Icon must end with two \r
 Icon
 
